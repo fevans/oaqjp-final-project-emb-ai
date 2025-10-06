@@ -1,3 +1,5 @@
+"""Implements functionality to support the emotion detection using IBM ai capability"""
+
 from flask import Flask, request, render_template
 from EmotionDetection.emotion_detection import emotion_detector
 
@@ -5,13 +7,20 @@ app = Flask(__name__)
 
 @app.route("/emotionDetector")
 def detect_emotion():
-    textToAnalyse = request.args.get('textToAnalyze')
-    emotion_detection_response = emotion_detector(textToAnalyse)
+    """
+    Analyzes the emotions of the text received from a client using emotion detection API.
+    Args:
+        textToAnalyze (str): The text to analyze.
+    Returns:
+        string : A formatted string with details of the anaylis and the dominant emotion.
+    """
+    text_to_analyse = request.args.get('textToAnalyze')
+    emotion_detection_response = emotion_detector(text_to_analyse)
 
     dominant_emotion = emotion_detection_response['dominant_emotion']
     if dominant_emotion is None:
         return 'Invalid text! Please try again!'
-        
+
     response = "For the given statement, the system response is "
     response += f"'anger': {emotion_detection_response['anger']}, "
     response += f"'disgust': {emotion_detection_response['disgust']}, "
@@ -19,11 +28,12 @@ def detect_emotion():
     response += f"'joy': {emotion_detection_response['joy']} and "
     response += f"'sadness': {emotion_detection_response['sadness']}. "
     response += f"The dominant emotion is <b>{emotion_detection_response['dominant_emotion']}. "
-    
+
     return response
 
 @app.route("/")
 def render_index_page():
+    """Displays the indext pay to the user""" 
     return render_template('index.html')
 
 if __name__ == "__main__":
